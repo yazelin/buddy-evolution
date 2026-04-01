@@ -45,6 +45,7 @@ async function handleSync(): Promise<void> {
         bones,
         evolution: state,
         companionName: config.companionName,
+        githubUsername: config.userId,
       }),
     })
 
