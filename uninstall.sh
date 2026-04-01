@@ -2,23 +2,17 @@
 set -e
 
 INSTALL_DIR="$HOME/.buddy-evolution-plugin"
-SETTINGS_FILE="$HOME/.claude/settings.json"
 
 echo "Uninstalling Buddy Evolution Plugin..."
 
-# Remove from Claude Code settings
-if [ -f "$SETTINGS_FILE" ]; then
-  node -e "
-    const fs = require('fs');
-    const settings = JSON.parse(fs.readFileSync('$SETTINGS_FILE', 'utf-8'));
-    if (settings.pluginDirs) {
-      settings.pluginDirs = settings.pluginDirs.filter(d => !d.includes('buddy-evolution'));
-      if (settings.pluginDirs.length === 0) delete settings.pluginDirs;
-    }
-    fs.writeFileSync('$SETTINGS_FILE', JSON.stringify(settings, null, 2) + '\n');
-  "
-  echo "Removed from Claude Code settings."
-fi
+# Remove shell alias
+for RC_FILE in "$HOME/.bashrc" "$HOME/.zshrc"; do
+  if [ -f "$RC_FILE" ] && grep -q "buddy-evolution" "$RC_FILE" 2>/dev/null; then
+    sed -i '/# Buddy Evolution Plugin/d' "$RC_FILE"
+    sed -i '/buddy-evolution/d' "$RC_FILE"
+    echo "Removed alias from $(basename $RC_FILE)"
+  fi
+done
 
 # Remove plugin directory
 if [ -d "$INSTALL_DIR" ]; then
@@ -27,5 +21,6 @@ if [ -d "$INSTALL_DIR" ]; then
 fi
 
 echo ""
-echo "✅ Uninstalled. Your evolution data at ~/.buddy-evolution/ was kept."
+echo "✅ Uninstalled. Run: source ~/.bashrc"
+echo "   Your evolution data at ~/.buddy-evolution/ was kept."
 echo "   To remove it too: rm -rf ~/.buddy-evolution/"
