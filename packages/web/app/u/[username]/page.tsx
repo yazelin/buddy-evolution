@@ -2,6 +2,7 @@ import { createSupabaseClient } from '@/lib/supabase'
 import { XPProgress } from '@/components/xp-progress'
 import { StatRadar } from '@/components/stat-radar'
 import { notFound } from 'next/navigation'
+import { checkAchievements, ACHIEVEMENTS } from '@/lib/achievements'
 
 const TIER_ICONS: Record<string, string> = {
   hatchling: '🥚', juvenile: '⚡', adult: '🌟', elder: '👑', ascended: '✨',
@@ -83,6 +84,33 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
             </div>
           </div>
         </div>
+
+        {(() => {
+          const earnedKeys = checkAchievements({
+            tier: buddy.tier,
+            shiny: buddy.shiny,
+            rarity: buddy.rarity,
+            streak_days: buddy.streak_days,
+            lifetime_stats: buddy.lifetime_stats as Record<string, number>,
+            stat_growth: buddy.stat_growth as Record<string, number>,
+            base_stats: buddy.base_stats as Record<string, number>,
+          })
+          const earnedAchievements = ACHIEVEMENTS.filter(a => earnedKeys.includes(a.key))
+          if (earnedAchievements.length === 0) return null
+          return (
+            <div className="mb-8">
+              <h2 className="text-lg font-bold mb-4">Achievements</h2>
+              <div className="flex flex-wrap gap-2">
+                {earnedAchievements.map(a => (
+                  <div key={a.key} className="bg-gray-900 rounded-full px-3 py-1 text-sm flex items-center gap-1" title={a.description}>
+                    <span>{a.icon}</span>
+                    <span>{a.name}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )
+        })()}
       </div>
     </main>
   )
