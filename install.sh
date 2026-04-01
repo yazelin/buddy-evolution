@@ -42,40 +42,21 @@ pnpm install --frozen-lockfile 2>/dev/null || pnpm install
 pnpm --filter @buddy-evolution/core build
 pnpm --filter @buddy-evolution/plugin build
 
-# Add shell alias so `claude` always loads the plugin
-ALIAS_LINE="alias claude=\"claude --plugin-dir $PLUGIN_DIR\""
-ALIAS_COMMENT="# Buddy Evolution Plugin for Claude Code"
-
-for RC_FILE in "$HOME/.bashrc" "$HOME/.zshrc"; do
-  if [ -f "$RC_FILE" ]; then
-    if ! grep -q "buddy-evolution" "$RC_FILE" 2>/dev/null; then
-      echo "" >> "$RC_FILE"
-      echo "$ALIAS_COMMENT" >> "$RC_FILE"
-      echo "$ALIAS_LINE" >> "$RC_FILE"
-      echo "Added alias to $(basename $RC_FILE)"
-    else
-      echo "Alias already exists in $(basename $RC_FILE)"
-    fi
-  fi
-done
-
 # Create data directory
 mkdir -p "$HOME/.buddy-evolution"
 
 echo ""
-echo "✅ Buddy Evolution Plugin installed!"
+echo "✅ Buddy Evolution Plugin installed at $PLUGIN_DIR"
 echo ""
-echo "Next steps:"
-echo "  1. Run: source ~/.bashrc   (or restart your terminal)"
-echo "  2. Run: claude"
-echo "  3. In Claude Code:"
-echo "     /buddy-evolution:evo setup    — import your /buddy data"
-echo "     /buddy-evolution:evo          — see your buddy's evolution"
+echo "To use it, start Claude Code with:"
 echo ""
-echo "To sync to the platform:"
-echo "  1. Visit https://buddy-evolution-web.vercel.app/login"
-echo "  2. Sign in with GitHub and generate a token"
-echo "  3. Copy the config to ~/.buddy-evolution/sync-config.json"
-echo "  4. Run /buddy-evolution:evo sync"
+echo "  claude --plugin-dir $PLUGIN_DIR"
+echo ""
+echo "Then in Claude Code:"
+echo "  /buddy-evolution:evo setup    — import your /buddy data"
+echo "  /buddy-evolution:evo          — see your buddy's evolution"
+echo "  /buddy-evolution:evo sync     — sync to the platform"
+echo ""
+echo "Platform: https://buddy-evolution-web.vercel.app"
 echo ""
 echo "🫧 Happy evolving!"
