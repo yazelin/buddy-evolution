@@ -100,6 +100,79 @@ export default async function Home() {
             </table>
           </div>
         </section>
+
+        <section className="mt-16">
+          <h2 className="text-xl font-bold mb-8 text-center">Getting Started</h2>
+          <ol className="space-y-6">
+            <li className="flex gap-4">
+              <span className="text-green-400 font-bold text-lg shrink-0 w-6">1.</span>
+              <div className="min-w-0">
+                <p className="font-bold mb-2">Install the plugin</p>
+                <div className="bg-gray-900 rounded px-4 py-3 text-sm text-gray-300 space-y-1">
+                  <p>/plugin marketplace add yazelin/buddy-evolution</p>
+                  <p>/plugin install buddy-evolution@buddy-evolution</p>
+                </div>
+              </div>
+            </li>
+            <li className="flex gap-4">
+              <span className="text-green-400 font-bold text-lg shrink-0 w-6">2.</span>
+              <div className="min-w-0">
+                <p className="font-bold mb-2">Import your buddy</p>
+                <div className="bg-gray-900 rounded px-4 py-3 text-sm text-gray-300">
+                  <p>/buddy-evolution:evo setup</p>
+                </div>
+              </div>
+            </li>
+            <li className="flex gap-4">
+              <span className="text-green-400 font-bold text-lg shrink-0 w-6">3.</span>
+              <div className="min-w-0">
+                <p className="font-bold mb-2">Use Claude Code normally</p>
+                <p className="text-sm text-gray-400">Hooks automatically track your tool calls, file edits, test runs, and tokens.</p>
+              </div>
+            </li>
+            <li className="flex gap-4">
+              <span className="text-green-400 font-bold text-lg shrink-0 w-6">4.</span>
+              <div className="min-w-0">
+                <p className="font-bold mb-2">Check your progress</p>
+                <div className="bg-gray-900 rounded px-4 py-3 text-sm text-gray-300">
+                  <p>/buddy-evolution:evo</p>
+                </div>
+              </div>
+            </li>
+            <li className="flex gap-4">
+              <span className="text-green-400 font-bold text-lg shrink-0 w-6">5.</span>
+              <div className="min-w-0">
+                <p className="font-bold mb-2">Sync to the platform <span className="text-gray-500 font-normal">(optional)</span></p>
+                <p className="text-sm text-gray-400 mb-2">Sign in above, get a token, then:</p>
+                <div className="bg-gray-900 rounded px-4 py-3 text-sm text-gray-300">
+                  <p>/buddy-evolution:evo sync</p>
+                </div>
+              </div>
+            </li>
+          </ol>
+        </section>
+
+        <footer className="mt-20 pt-8 border-t border-gray-800 text-center text-sm text-gray-600 space-y-2">
+          <div className="flex gap-6 justify-center">
+            <a
+              href="https://github.com/yazelin/buddy-evolution"
+              className="hover:text-gray-400 transition-colors"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              GitHub
+            </a>
+            <a
+              href="https://github.com/anthropics/claude-code/issues/1"
+              className="hover:text-gray-400 transition-colors"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Original PoC Issue
+            </a>
+          </div>
+          <p>buddy evolution — grow together</p>
+        </footer>
       </div>
     </main>
   )
