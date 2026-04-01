@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
-import { rollCompanionBones, processSessionEnd } from '@buddy-evolution/core'
+import { rollCompanionBones } from '@buddy-evolution/core'
 import type { CompanionBones } from '@buddy-evolution/core'
-import { loadEvolutionState, saveEvolutionState } from './evolution-store.js'
+import { loadEvolutionState } from './evolution-store.js'
 import { renderEvoStatus, renderEvoStats } from './display.js'
-import { readFileSync, existsSync } from 'node:fs'
-import { getSyncConfigPath } from './paths.js'
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs'
+import { getSyncConfigPath, getDataDir } from './paths.js'
 
 interface SyncConfig {
   userId: string
@@ -23,6 +23,14 @@ function loadSyncConfig(): SyncConfig | null {
   } catch {
     return null
   }
+}
+
+function saveSyncConfig(config: SyncConfig): void {
+  const dir = getDataDir()
+  if (!existsSync(dir)) {
+    mkdirSync(dir, { recursive: true })
+  }
+  writeFileSync(getSyncConfigPath(), JSON.stringify(config, null, 2), 'utf-8')
 }
 
 function getBones(config: SyncConfig | null): CompanionBones {
@@ -67,6 +75,62 @@ async function handleSync(): Promise<void> {
   }
 }
 
+function handleSetup(jsonArg: string): void {
+  if (!jsonArg) {
+    console.log('  Usage: /evo setup \'<JSON>\'')
+    console.log('  Example: /evo setup \'{"species":"blob","rarity":"epic","eye":"✦","hat":"none","shiny":false,"stats":{"DEBUGGING":27,"PATIENCE":72,"CHAOS":49,"WISDOM":100,"SNARK":70},"name":"Zephyrost"}\'')
+    return
+  }
+
+  let data: any
+  try {
+    data = JSON.parse(jsonArg)
+  } catch {
+    console.log('  Error: Invalid JSON')
+    return
+  }
+
+  const { species, rarity, eye, hat, shiny, stats, name } = data
+
+  if (!species || !rarity || !eye || !stats) {
+    console.log('  Error: Missing required fields (species, rarity, eye, stats)')
+    return
+  }
+
+  const customBones: CompanionBones = {
+    species,
+    rarity,
+    eye,
+    hat: hat || 'none',
+    shiny: shiny || false,
+    stats: {
+      DEBUGGING: stats.DEBUGGING || 0,
+      PATIENCE: stats.PATIENCE || 0,
+      CHAOS: stats.CHAOS || 0,
+      WISDOM: stats.WISDOM || 0,
+      SNARK: stats.SNARK || 0,
+    },
+    inspirationSeed: 0,
+  }
+
+  const config: SyncConfig = loadSyncConfig() || {
+    userId: '',
+    apiToken: '',
+    platformUrl: 'https://buddy-evolution-web.vercel.app',
+    companionName: name || 'Buddy',
+  }
+
+  config.customBones = customBones
+  if (name) config.companionName = name
+  saveSyncConfig(config)
+
+  console.log(`  Buddy imported: ${name || species} the ${species.charAt(0).toUpperCase() + species.slice(1)}`)
+  console.log(`  Rarity: ${rarity}, Eye: ${eye}, Shiny: ${shiny || false}`)
+  console.log(`  Stats: DEBUG=${stats.DEBUGGING} PAT=${stats.PATIENCE} CHAOS=${stats.CHAOS} WIS=${stats.WISDOM} SNARK=${stats.SNARK}`)
+  console.log('')
+  console.log('  Run /evo to see your buddy!')
+}
+
 async function main(): Promise<void> {
   const args = process.argv.slice(2)
   const subcommand = args[0] || 'status'
@@ -89,8 +153,12 @@ async function main(): Promise<void> {
       await handleSync()
       break
 
+    case 'setup':
+      handleSetup(args.slice(1).join(' '))
+      break
+
     default:
-      console.log('Usage: /evo [status|stats|sync]')
+      console.log('Usage: /evo [status|stats|sync|setup]')
       break
   }
 }
