@@ -217,7 +217,7 @@ pnpm --filter @buddy-evolution/web dev
 - **[@yazelin](https://github.com/yazelin)** — Claude Code plugin (hooks, session tracking, transcript parsing, `/evo` skill), web platform (Next.js + Supabase + Vercel)
 
 ### Community
-- **[@Hegemon78](https://github.com/Hegemon78)** — Extended spec with achievement milestones, branching evolution, buddy journal
+- **[@Hegemon78](https://github.com/Hegemon78)** — Extended spec with achievement milestones, branching evolution, buddy journal ([buddy-evolution-spec](https://github.com/Hegemon78/buddy-evolution-spec))
 - **[@FrankFMY](https://github.com/FrankFMY)** — Contextual familiarity concept, development philosophy evolution paths
 
 ## License
