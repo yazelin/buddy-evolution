@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$CLAUDE_PLUGIN_ROOT/hooks/on-session-start.sh\"",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/on-session-start.sh\"",
             "timeout": 5
           }
         ]
@@ -17,7 +17,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$CLAUDE_PLUGIN_ROOT/hooks/on-tool-use.sh\"",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/on-tool-use.sh\"",
             "timeout": 3,
             "async": true
           }
@@ -29,7 +29,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$CLAUDE_PLUGIN_ROOT/hooks/on-tool-fail.sh\"",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/on-tool-fail.sh\"",
             "timeout": 3,
             "async": true
           }
@@ -41,7 +41,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$CLAUDE_PLUGIN_ROOT/hooks/on-compact.sh\"",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/on-compact.sh\"",
             "timeout": 3,
             "async": true
           }
@@ -53,7 +53,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$CLAUDE_PLUGIN_ROOT/hooks/on-session-end.sh\"",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/on-session-end.sh\"",
             "timeout": 30
           }
         ]
