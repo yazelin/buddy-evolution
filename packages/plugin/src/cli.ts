@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { rollCompanionBones, processSessionEnd } from '@buddy-evolution/core'
+import type { CompanionBones } from '@buddy-evolution/core'
 import { loadEvolutionState, saveEvolutionState } from './evolution-store.js'
 import { renderEvoStatus, renderEvoStats } from './display.js'
 import { readFileSync, existsSync } from 'node:fs'
@@ -11,6 +12,7 @@ interface SyncConfig {
   apiToken: string
   platformUrl: string
   companionName: string
+  customBones?: CompanionBones
 }
 
 function loadSyncConfig(): SyncConfig | null {
@@ -23,6 +25,11 @@ function loadSyncConfig(): SyncConfig | null {
   }
 }
 
+function getBones(config: SyncConfig | null): CompanionBones {
+  if (config?.customBones) return config.customBones
+  return rollCompanionBones(config?.userId || 'default-user')
+}
+
 async function handleSync(): Promise<void> {
   const config = loadSyncConfig()
   if (!config || !config.apiToken) {
@@ -32,7 +39,7 @@ async function handleSync(): Promise<void> {
   }
 
   const state = loadEvolutionState()
-  const bones = rollCompanionBones(config.userId)
+  const bones = getBones(config)
 
   try {
     const res = await fetch(`${config.platformUrl}/api/sync`, {
@@ -65,9 +72,8 @@ async function main(): Promise<void> {
   const subcommand = args[0] || 'status'
 
   const config = loadSyncConfig()
-  const userId = config?.userId || 'default-user'
   const companionName = config?.companionName || 'Buddy'
-  const bones = rollCompanionBones(userId)
+  const bones = getBones(config)
   const state = loadEvolutionState()
 
   switch (subcommand) {
