@@ -2,7 +2,7 @@
 # Session end: parse transcript, calculate XP, update evolution state
 # Uses inline Node.js — no build step required
 
-DATA_DIR="${CLAUDE_PLUGIN_DATA:-$HOME/.buddy-evolution}"
+export DATA_DIR="${CLAUDE_PLUGIN_DATA:-$HOME/.buddy-evolution}"
 SESSION_FILE="$DATA_DIR/current-session.json"
 EVO_FILE="$DATA_DIR/evolution-state.json"
 SYNC_FILE="$DATA_DIR/sync-config.json"
@@ -10,7 +10,7 @@ SYNC_FILE="$DATA_DIR/sync-config.json"
 [ -f "$SESSION_FILE" ] || exit 0
 
 # Read hook input (transcript_path from stdin)
-HOOK_INPUT=$(cat)
+export HOOK_INPUT=$(cat)
 
 # Run all XP calculation inline with Node.js
 node -e '
