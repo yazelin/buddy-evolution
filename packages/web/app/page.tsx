@@ -40,7 +40,7 @@ export default async function Home() {
     <main className="min-h-screen bg-gray-950 text-gray-100 font-mono">
       <div className="max-w-3xl mx-auto px-4 py-16">
         <header className="text-center mb-16">
-          <pre className="text-green-400 text-sm mb-4">{`
+          <pre className="text-green-400 text-sm mb-4 text-left inline-block">{`
    .----.
   ( ·  · )   buddy evolution
   (      )   ═══════════════
