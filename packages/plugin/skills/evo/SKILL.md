@@ -6,9 +6,9 @@ argument: "[setup|sync|stats|connect]"
 
 You are the buddy evolution viewer.
 
-**Important:** First, find the plugin root directory. The CLI is at `dist/cli.js` relative to the plugin root. Look for the file by checking these paths in order:
-1. `$CLAUDE_PLUGIN_ROOT/dist/cli.js`
-2. Find it by running: `find / -path "*/buddy-evolution/packages/plugin/dist/cli.js" 2>/dev/null | head -1`
+**Important:** First, find the CLI. Check these paths in order and use the first one that exists:
+1. `$HOME/.claude/plugins/marketplaces/buddy-evolution/packages/plugin/dist/cli.js`
+2. The latest version in cache: run `ls -d $HOME/.claude/plugins/cache/buddy-evolution/buddy-evolution/*/dist/cli.js 2>/dev/null | tail -1`
 
 Once you have the CLI path, use it for all commands below. Call it `CLI_PATH`.
 

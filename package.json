@@ -6,7 +6,7 @@
     "build": "turbo build",
     "test": "turbo test",
     "typecheck": "turbo typecheck",
-    "postinstall": "pnpm build"
+    "postinstall": "turbo build --filter=@buddy-evolution/core --filter=@buddy-evolution/plugin"
   },
   "devDependencies": {
     "turbo": "^2.4.0",
