@@ -18,13 +18,14 @@ RPG evolution system for Claude Code's `/buddy` companion pet. Your pet grows ba
 
 ## Install
 
-One command:
+In Claude Code, run:
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/yazelin/buddy-evolution/master/install.sh | bash
+```
+/plugin marketplace add yazelin/buddy-evolution
+/plugin install buddy-evolution@buddy-evolution
 ```
 
-Then restart Claude Code. That's it.
+That's it. No npm, no clone, no build.
 
 ### Requirements
 
