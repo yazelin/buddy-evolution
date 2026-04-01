@@ -1,65 +1,102 @@
-import Image from "next/image";
+import { createSupabaseClient } from '@/lib/supabase'
 
-export default function Home() {
+const TIER_ICONS: Record<string, string> = {
+  hatchling: '🥚', juvenile: '⚡', adult: '🌟', elder: '👑', ascended: '✨',
+}
+
+const SPECIES_ICONS: Record<string, string> = {
+  duck: '🦆', goose: '🪿', blob: '🫧', cat: '🐱', dragon: '🐉',
+  octopus: '🐙', owl: '🦉', penguin: '🐧', turtle: '🐢', snail: '🐌',
+  ghost: '👻', axolotl: '🦎', capybara: '🦫', cactus: '🌵', robot: '🤖',
+  rabbit: '🐰', mushroom: '🍄', chonk: '🐈',
+}
+
+function formatXP(xp: number): string {
+  if (xp >= 1_000_000) return `${(xp / 1_000_000).toFixed(1)}M`
+  if (xp >= 1_000) return `${(xp / 1_000).toFixed(1)}K`
+  return String(xp)
+}
+
+interface BuddyRow {
+  github_username: string
+  species: string
+  rarity: string
+  shiny: boolean
+  total_xp: number
+  tier: string
+  companion_name: string
+  streak_days: number
+}
+
+export default async function Home() {
+  const supabase = createSupabaseClient()
+  const { data: buddies } = await supabase
+    .from('buddies')
+    .select('github_username, species, rarity, shiny, total_xp, tier, companion_name, streak_days')
+    .order('total_xp', { ascending: false })
+    .limit(20)
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <main className="min-h-screen bg-gray-950 text-gray-100 font-mono">
+      <div className="max-w-3xl mx-auto px-4 py-16">
+        <header className="text-center mb-16">
+          <pre className="text-green-400 text-sm mb-4">{`
+   .----.
+  ( ·  · )   buddy evolution
+  (      )   ═══════════════
+   \`----´    your pet grows with you
+          `}</pre>
+          <p className="text-gray-400 mt-4">
+            Install the plugin. Use Claude Code. Watch your buddy evolve.
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+        </header>
+
+        <section>
+          <h2 className="text-xl font-bold mb-6 text-center">Leaderboard</h2>
+          <div className="border border-gray-800 rounded-lg overflow-hidden">
+            <table className="w-full">
+              <thead className="bg-gray-900">
+                <tr>
+                  <th className="px-4 py-3 text-left text-sm">#</th>
+                  <th className="px-4 py-3 text-left text-sm">Buddy</th>
+                  <th className="px-4 py-3 text-left text-sm">Tier</th>
+                  <th className="px-4 py-3 text-right text-sm">XP</th>
+                  <th className="px-4 py-3 text-right text-sm">Streak</th>
+                </tr>
+              </thead>
+              <tbody>
+                {(buddies as BuddyRow[] || []).map((b, i) => (
+                  <tr key={b.github_username} className="border-t border-gray-800 hover:bg-gray-900/50">
+                    <td className="px-4 py-3 text-gray-500">{i + 1}</td>
+                    <td className="px-4 py-3">
+                      <a href={`/u/${b.github_username}`} className="hover:text-green-400">
+                        {SPECIES_ICONS[b.species] || '🐾'}{' '}
+                        <span className="font-bold">{b.companion_name}</span>{' '}
+                        <span className="text-gray-500">@{b.github_username}</span>
+                        {b.shiny && <span className="ml-1 text-yellow-400">✦</span>}
+                      </a>
+                    </td>
+                    <td className="px-4 py-3">
+                      {TIER_ICONS[b.tier] || ''} {b.tier}
+                    </td>
+                    <td className="px-4 py-3 text-right text-green-400">{formatXP(b.total_xp)}</td>
+                    <td className="px-4 py-3 text-right">
+                      {b.streak_days > 0 ? `🔥${b.streak_days}d` : '-'}
+                    </td>
+                  </tr>
+                ))}
+                {(!buddies || buddies.length === 0) && (
+                  <tr>
+                    <td colSpan={5} className="px-4 py-8 text-center text-gray-600">
+                      No buddies yet. Be the first to sync!
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </main>
+  )
 }
