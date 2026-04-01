@@ -96,18 +96,35 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
             base_stats: buddy.base_stats as Record<string, number>,
           })
           const earnedAchievements = ACHIEVEMENTS.filter(a => earnedKeys.includes(a.key))
-          if (earnedAchievements.length === 0) return null
           return (
             <div className="mb-8">
-              <h2 className="text-lg font-bold mb-4">Achievements</h2>
-              <div className="flex flex-wrap gap-2">
-                {earnedAchievements.map(a => (
-                  <div key={a.key} className="bg-gray-900 rounded-full px-3 py-1 text-sm flex items-center gap-1" title={a.description}>
-                    <span>{a.icon}</span>
-                    <span>{a.name}</span>
-                  </div>
-                ))}
+              <div className="flex items-baseline justify-between mb-4">
+                <h2 className="text-lg font-bold">Achievements</h2>
+                <div className="flex items-center gap-3 text-sm">
+                  <span className="text-gray-400">
+                    <span className="text-gray-100">{earnedKeys.length}</span>
+                    <span className="text-gray-500">/{ACHIEVEMENTS.length} unlocked</span>
+                  </span>
+                  <a
+                    href={`/achievements?user=${buddy.github_username}`}
+                    className="text-gray-500 hover:text-gray-300"
+                  >
+                    View all &rarr;
+                  </a>
+                </div>
               </div>
+              {earnedAchievements.length > 0 ? (
+                <div className="flex flex-wrap gap-2">
+                  {earnedAchievements.map(a => (
+                    <div key={a.key} className="bg-gray-900 rounded-full px-3 py-1 text-sm flex items-center gap-1" title={a.description}>
+                      <span>{a.icon}</span>
+                      <span>{a.name}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-gray-500">No achievements yet. Keep coding!</p>
+              )}
             </div>
           )
         })()}
