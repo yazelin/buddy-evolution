@@ -1,10 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createSupabaseClient } from '@/lib/supabase'
+import { createClient } from '@supabase/supabase-js'
 import { randomBytes } from 'node:crypto'
 
 export async function POST(req: NextRequest) {
-  const supabase = createSupabaseClient()
-  const { data: { user }, error: authErr } = await supabase.auth.getUser()
+  const authHeader = req.headers.get('authorization')
+  if (!authHeader?.startsWith('Bearer ')) {
+    return NextResponse.json({ error: 'Missing access token' }, { status: 401 })
+  }
+
+  const accessToken = authHeader.slice(7)
+
+  // Use service role to verify the user and write to plugin_tokens
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  )
+
+  // Verify the access token by getting the user
+  const { data: { user }, error: authErr } = await supabase.auth.getUser(accessToken)
 
   if (authErr || !user) {
     return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })

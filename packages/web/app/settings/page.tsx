@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { createSupabaseClient } from '@/lib/supabase'
 
 export default function SettingsPage() {
   const [token, setToken] = useState<string | null>(null)
@@ -11,11 +12,23 @@ export default function SettingsPage() {
   async function generateToken() {
     setLoading(true)
     try {
-      const res = await fetch('/api/auth/token', { method: 'POST' })
+      const supabase = createSupabaseClient()
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session?.access_token) {
+        alert('Not logged in. Please sign in first.')
+        window.location.href = '/login'
+        return
+      }
+      const res = await fetch('/api/auth/token', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${session.access_token}` },
+      })
       const data = await res.json()
       if (data.token) {
         setToken(data.token)
         setUserId(data.userId)
+      } else {
+        alert(data.error || 'Failed to generate token')
       }
     } finally {
       setLoading(false)

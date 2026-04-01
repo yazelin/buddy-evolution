@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createSupabaseClient } from '@/lib/supabase'
+import { createClient } from '@supabase/supabase-js'
 
 export async function POST(req: NextRequest) {
   const authHeader = req.headers.get('authorization')
@@ -9,7 +9,11 @@ export async function POST(req: NextRequest) {
 
   const token = authHeader.slice(7)
 
-  const supabase = createSupabaseClient()
+  // Use service role to bypass RLS for server-side operations
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  )
 
   // Look up user by plugin token
   const { data: tokenRow, error: tokenErr } = await supabase
