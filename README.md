@@ -210,7 +210,15 @@ pnpm --filter @buddy-evolution/web dev
 
 ## Credits
 
-Based on the evolution system design by [RaphaelRUzan/buddy-evolution](https://github.com/RaphaelRUzan/buddy-evolution) ([issue #41684](https://github.com/anthropics/claude-code/issues/41684)).
+### Core Design
+- **[@RaphaelRUzan](https://github.com/RaphaelRUzan)** — Original evolution system design: XP engine, tier thresholds, stat growth with diminishing returns, streak multipliers, sprite overlay pipeline. [PoC repo](https://github.com/RaphaelRUzan/buddy-evolution) / [Feature request #41684](https://github.com/anthropics/claude-code/issues/41684)
+
+### Implementation
+- **[@yazelin](https://github.com/yazelin)** — Claude Code plugin (hooks, session tracking, transcript parsing, `/evo` skill), web platform (Next.js + Supabase + Vercel)
+
+### Community
+- **[@Hegemon78](https://github.com/Hegemon78)** — Extended spec with achievement milestones, branching evolution, buddy journal
+- **[@FrankFMY](https://github.com/FrankFMY)** — Contextual familiarity concept, development philosophy evolution paths
 
 ## License
 
