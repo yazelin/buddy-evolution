@@ -27,6 +27,16 @@ if [ -z "$PLUGIN_ROOT" ]; then
   exit 0
 fi
 
+# Link vendor/core-dist as node_modules/@buddy-evolution/core
+# so that `import from '@buddy-evolution/core'` resolves in cache env
+CORE_TARGET="$PLUGIN_ROOT/node_modules/@buddy-evolution/core"
+if [ ! -d "$CORE_TARGET" ] && [ -d "$PLUGIN_ROOT/vendor/core-dist" ]; then
+  mkdir -p "$CORE_TARGET/dist"
+  cp "$PLUGIN_ROOT/vendor/core-dist/"* "$CORE_TARGET/dist/"
+  cp "$PLUGIN_ROOT/vendor/core-package.json" "$CORE_TARGET/package.json"
+  echo "✓ Installed @buddy-evolution/core from vendor"
+fi
+
 node -e "
 const fs = require('fs');
 const path = '${SETTINGS_FILE}';
@@ -95,21 +105,28 @@ const hooksToRegister = {
   }
 };
 
-let changed = false;
-for (const [event, entry] of Object.entries(hooksToRegister)) {
-  if (!hasBuddyHook(event)) {
-    if (!settings.hooks[event]) settings.hooks[event] = [];
-    settings.hooks[event].push(entry);
-    changed = true;
+// First, remove any existing buddy-evolution hooks (may have stale paths)
+let removed = false;
+for (const [event, entries] of Object.entries(settings.hooks)) {
+  const filtered = entries.filter(entry => {
+    if (!entry.hooks) return true;
+    return !entry.hooks.some(h => h.command && h.command.includes('buddy-evolution'));
+  });
+  if (filtered.length !== entries.length) {
+    settings.hooks[event] = filtered;
+    if (filtered.length === 0) delete settings.hooks[event];
+    removed = true;
   }
 }
 
-if (changed) {
-  fs.writeFileSync(path, JSON.stringify(settings, null, 2) + '\n');
-  console.log('✓ Registered buddy-evolution hooks in settings.json');
-} else {
-  console.log('✓ Hooks already registered');
+// Then add fresh hooks with current paths
+for (const [event, entry] of Object.entries(hooksToRegister)) {
+  if (!settings.hooks[event]) settings.hooks[event] = [];
+  settings.hooks[event].push(entry);
 }
+
+fs.writeFileSync(path, JSON.stringify(settings, null, 2) + '\n');
+console.log(removed ? '✓ Updated buddy-evolution hooks in settings.json' : '✓ Registered buddy-evolution hooks in settings.json');
 " 2>&1
 
 exit 0
