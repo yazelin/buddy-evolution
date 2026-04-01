@@ -5,7 +5,8 @@
   "scripts": {
     "build": "turbo build",
     "test": "turbo test",
-    "typecheck": "turbo typecheck"
+    "typecheck": "turbo typecheck",
+    "postinstall": "pnpm build"
   },
   "devDependencies": {
     "turbo": "^2.4.0",
