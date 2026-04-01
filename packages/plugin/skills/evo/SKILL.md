@@ -6,11 +6,17 @@ argument: "[setup|sync|stats]"
 
 You are the buddy evolution viewer.
 
+**Important:** First, find the plugin root directory. The CLI is at `dist/cli.js` relative to the plugin root. Look for the file by checking these paths in order:
+1. `$CLAUDE_PLUGIN_ROOT/dist/cli.js`
+2. Find it by running: `find / -path "*/buddy-evolution/packages/plugin/dist/cli.js" 2>/dev/null | head -1`
+
+Once you have the CLI path, use it for all commands below. Call it `CLI_PATH`.
+
 ## /evo (no arguments or "status")
 
 Run:
 ```
-node "$CLAUDE_PLUGIN_ROOT/dist/cli.js" status
+node <CLI_PATH> status
 ```
 Display the output exactly as printed.
 
@@ -18,7 +24,7 @@ Display the output exactly as printed.
 
 Run:
 ```
-node "$CLAUDE_PLUGIN_ROOT/dist/cli.js" stats
+node <CLI_PATH> stats
 ```
 Display the output exactly as printed.
 
@@ -26,7 +32,7 @@ Display the output exactly as printed.
 
 Run:
 ```
-node "$CLAUDE_PLUGIN_ROOT/dist/cli.js" sync
+node <CLI_PATH> sync
 ```
 Display the output exactly as printed.
 
@@ -38,15 +44,11 @@ Follow these steps:
 
 1. Tell the user: "Setting up buddy evolution... I'll read your /buddy data first."
 
-2. Run this command to get the user's buddy info:
-```
-claude /buddy 2>&1 || echo "BUDDY_NOT_FOUND"
-```
-If /buddy is not available, tell the user and skip to step 4.
+2. Run the /buddy skill to get the user's buddy info. If /buddy is not available, ask the user to describe their buddy.
 
 3. Parse the /buddy output to extract these fields:
-   - **species**: the species name (e.g., "blob", "duck", "cat", etc.) — shown in the top-right corner
-   - **rarity**: "common", "uncommon", "rare", "epic", or "legendary" — shown with star rating
+   - **species**: the species name (e.g., "blob", "duck", "cat", etc.)
+   - **rarity**: "common", "uncommon", "rare", "epic", or "legendary"
    - **eye**: the eye character used in the sprite (e.g., "·", "✦", "×", "◉", "@", "°")
    - **hat**: "none", "crown", "tophat", "propeller", "halo", "wizard", "beanie", or "tinyduck"
    - **shiny**: true if the buddy has a shiny indicator, false otherwise
@@ -55,7 +57,7 @@ If /buddy is not available, tell the user and skip to step 4.
 
 4. Run the setup command with the extracted data as JSON:
 ```
-node "$CLAUDE_PLUGIN_ROOT/dist/cli.js" setup '<JSON>'
+node <CLI_PATH> setup '<JSON>'
 ```
 
 Where `<JSON>` is a JSON string like:
@@ -65,4 +67,4 @@ Where `<JSON>` is a JSON string like:
 
 5. Display the result to the user.
 
-If you cannot parse the /buddy output, ask the user to manually provide: species, rarity, eye character, stats (DEBUGGING, PATIENCE, CHAOS, WISDOM, SNARK), and their buddy's name. Then construct the JSON and run the setup command.
+If you cannot parse the /buddy output, ask the user to manually provide: species, rarity, eye character, stats (DEBUGGING, PATIENCE, CHAOS, WISDOM, SNARK), and their buddy's name.
