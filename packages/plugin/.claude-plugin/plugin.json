@@ -2,6 +2,6 @@
   "name": "buddy-evolution",
   "version": "0.1.0",
   "description": "RPG evolution system for /buddy — pets grow from actual usage",
-  "skills": ["skills/evo"],
-  "hooks": "hooks/hooks.json"
+  "skills": "./skills/",
+  "hooks": "./hooks/hooks.json"
 }
