@@ -2,19 +2,14 @@
 
 RPG evolution system for Claude Code's `/buddy` companion pet. Your pet grows based on actual usage — not RNG, not time gates, just how much you use Claude Code.
 
-```
-                            🫧 Zephyrost the Blob
-   .----.                   ══════════════════════
-  ( ✦  ✦ )                  Tier: Juvenile ⚡
-  (      )                  XP: 245,000 / 1,000,000
-   `----´                   ████████░░░░░░░░ 24.5%
+![Landing Page](docs/screenshots/landing.png)
 
-  DEBUGGING  ████████████████████░░░░ 68 (+23)
-  PATIENCE   ███████████████░░░░░░░░░ 53 (+18)
-  WISDOM     ██████████████░░░░░░░░░░ 44 (+9)
-  SNARK      ██████░░░░░░░░░░░░░░░░░░ 19 (+4)
-  CHAOS      █████░░░░░░░░░░░░░░░░░░░ 12 (+2)
-```
+### Profile & Achievements
+
+<p float="left">
+  <img src="docs/screenshots/profile.png" width="48%" />
+  <img src="docs/screenshots/achievements.png" width="48%" />
+</p>
 
 ## Install
 
