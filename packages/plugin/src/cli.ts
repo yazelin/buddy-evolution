@@ -5,6 +5,7 @@ import type { CompanionBones } from '@buddy-evolution/core'
 import { loadEvolutionState } from './evolution-store.js'
 import { renderEvoStatus, renderEvoStats } from './display.js'
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs'
+import { join } from 'node:path'
 import { getSyncConfigPath, getDataDir } from './paths.js'
 
 interface SyncConfig {
@@ -129,6 +130,80 @@ function handleSetup(jsonArg: string): void {
   console.log(`  Stats: DEBUG=${stats.DEBUGGING} PAT=${stats.PATIENCE} CHAOS=${stats.CHAOS} WIS=${stats.WISDOM} SNARK=${stats.SNARK}`)
   console.log('')
   console.log('  Run /evo to see your buddy!')
+
+  // Auto-register hooks on setup
+  registerHooks()
+}
+
+function registerHooks(): void {
+  const settingsPath = join(process.env.HOME || '', '.claude', 'settings.json')
+  if (!existsSync(settingsPath)) {
+    console.log('  ⚠ ~/.claude/settings.json not found, skipping hook registration')
+    return
+  }
+
+  let settings: any
+  try {
+    settings = JSON.parse(readFileSync(settingsPath, 'utf-8'))
+  } catch {
+    console.log('  ⚠ Could not parse settings.json')
+    return
+  }
+
+  if (!settings.hooks) settings.hooks = {}
+
+  // Find plugin root in cache
+  const cacheBase = join(process.env.HOME || '', '.claude', 'plugins', 'cache', 'buddy-evolution', 'buddy-evolution')
+  let pluginRoot = ''
+  if (existsSync(cacheBase)) {
+    const { readdirSync } = require('node:fs')
+    const versions = readdirSync(cacheBase).sort()
+    if (versions.length > 0) {
+      pluginRoot = join(cacheBase, versions[versions.length - 1])
+    }
+  }
+  if (!pluginRoot) {
+    console.log('  ⚠ Could not find plugin cache directory')
+    return
+  }
+
+  const hookDefs: Array<{ event: string; matcher?: string; script: string; timeout: number; async?: boolean }> = [
+    { event: 'SessionStart', script: 'on-session-start.sh', timeout: 5 },
+    { event: 'PostToolUse', matcher: 'Bash|Edit|Write|NotebookEdit', script: 'on-tool-use.sh', timeout: 3, async: true },
+    { event: 'PostToolUseFailure', script: 'on-tool-fail.sh', timeout: 3, async: true },
+    { event: 'PostCompact', script: 'on-compact.sh', timeout: 3, async: true },
+    { event: 'SessionEnd', script: 'on-session-end.sh', timeout: 30 },
+  ]
+
+  let added = 0
+  for (const def of hookDefs) {
+    if (!settings.hooks[def.event]) settings.hooks[def.event] = []
+    const arr = settings.hooks[def.event] as any[]
+    const alreadyExists = arr.some((e: any) =>
+      e.hooks?.some((h: any) => h.command?.includes('buddy-evolution'))
+    )
+    if (alreadyExists) continue
+
+    const entry: any = {
+      ...(def.matcher ? { matcher: def.matcher } : {}),
+      hooks: [{
+        type: 'command',
+        command: `bash "${pluginRoot}/hooks/${def.script}"`,
+        timeout: def.timeout,
+        ...(def.async ? { async: true } : {}),
+      }],
+    }
+    arr.push(entry)
+    added++
+  }
+
+  if (added === 0) {
+    console.log('  ✓ Hooks already registered')
+  } else {
+    writeFileSync(settingsPath, JSON.stringify(settings, null, 2) + '\n')
+    console.log(`  ✓ Registered ${added} hooks in settings.json`)
+    console.log('  ⚡ Restart Claude Code (new session) for hooks to take effect')
+  }
 }
 
 function handleConnect(tokenArg: string): void {
@@ -203,8 +278,12 @@ async function main(): Promise<void> {
       handleConnect(args.slice(1).join(' '))
       break
 
+    case 'install-hooks':
+      registerHooks()
+      break
+
     default:
-      console.log('Usage: /evo [status|stats|sync|setup|connect]')
+      console.log('Usage: /evo [status|stats|sync|setup|connect|install-hooks]')
       break
   }
 }
