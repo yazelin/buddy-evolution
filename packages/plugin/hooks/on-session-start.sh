@@ -1,3 +1,5 @@
 #!/bin/bash
-node "$CLAUDE_PLUGIN_ROOT/dist/hooks/init-session.js" 2>/dev/null
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PLUGIN_ROOT="$(dirname "$SCRIPT_DIR")"
+node "$PLUGIN_ROOT/dist/hooks/init-session.js" 2>/dev/null
 exit 0
