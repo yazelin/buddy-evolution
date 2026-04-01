@@ -161,7 +161,7 @@ export default async function Home() {
               GitHub
             </a>
             <a
-              href="https://github.com/anthropics/claude-code/issues/1"
+              href="https://github.com/anthropics/claude-code/issues/41684"
               className="hover:text-gray-400 transition-colors"
               target="_blank"
               rel="noopener noreferrer"
