@@ -47,6 +47,7 @@ In Claude Code, go to `/plugin` → Installed → buddy-evolution → Uninstall.
 | `/buddy-evolution:evo setup` | Import your real `/buddy` data |
 | `/buddy-evolution:evo stats` | Detailed lifetime statistics |
 | `/buddy-evolution:evo sync` | Sync to the online platform |
+| `/buddy-evolution:evo connect` | Connect to the platform with a token |
 
 ### Quick Start
 
@@ -119,8 +120,8 @@ Sync your buddy to the web platform for leaderboards, profiles, and achievements
 1. Visit [buddy-evolution-web.vercel.app/login](https://buddy-evolution-web.vercel.app/login)
 2. Sign in with GitHub
 3. Go to Settings → Generate Token
-4. Copy the JSON config to `~/.buddy-evolution/sync-config.json`
-5. In Claude Code, run `/buddy-evolution:evo sync`
+4. In Claude Code, run `/buddy-evolution:evo connect <token>` (or paste the full JSON config)
+5. Run `/buddy-evolution:evo sync`
 
 Your profile will be at `https://buddy-evolution-web.vercel.app/u/<github-username>`.
 
@@ -165,7 +166,7 @@ buddy-evolution/
 |-------|-----------|
 | Core engine | TypeScript |
 | Plugin | Claude Code hooks + skills |
-| Platform | Next.js 15 + Tailwind CSS |
+| Platform | Next.js 16 + Tailwind CSS |
 | Database | Supabase (Postgres) |
 | Auth | GitHub OAuth via Supabase |
 | Hosting | Vercel (free tier) |
