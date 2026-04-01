@@ -25,19 +25,17 @@ In Claude Code, run:
 /plugin install buddy-evolution@buddy-evolution
 ```
 
-That's it. No npm, no clone, no build.
+That's it. Dependencies install and build automatically.
 
 ### Requirements
 
 - Claude Code v2.1+
 - Node.js 20+
-- pnpm (auto-installed if missing)
+- pnpm
 
 ### Uninstall
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/yazelin/buddy-evolution/master/uninstall.sh | bash
-```
+In Claude Code, go to `/plugin` → Installed → buddy-evolution → Uninstall.
 
 ## Usage
 
@@ -57,6 +55,7 @@ curl -fsSL https://raw.githubusercontent.com/yazelin/buddy-evolution/master/unin
 2. /buddy-evolution:evo           ← see your buddy + XP progress
 3. Use Claude Code normally        ← hooks track everything automatically
 4. /buddy-evolution:evo           ← watch your XP grow!
+5. /buddy-evolution:evo sync      ← upload to the online platform
 ```
 
 ## How It Works
@@ -117,11 +116,13 @@ Sync your buddy to the web platform for leaderboards, profiles, and achievements
 
 ### Setup Sync
 
-1. Visit https://buddy-evolution-web.vercel.app/login
+1. Visit [buddy-evolution-web.vercel.app/login](https://buddy-evolution-web.vercel.app/login)
 2. Sign in with GitHub
 3. Go to Settings → Generate Token
-4. Copy the config JSON to `~/.buddy-evolution/sync-config.json`
-5. Run `/buddy-evolution:evo sync`
+4. Copy the JSON config to `~/.buddy-evolution/sync-config.json`
+5. In Claude Code, run `/buddy-evolution:evo sync`
+
+Your profile will be at `https://buddy-evolution-web.vercel.app/u/<github-username>`.
 
 ### Features
 
