@@ -44,9 +44,11 @@ Follow these steps:
 
 1. Tell the user: "Setting up buddy evolution... I'll read your /buddy data first."
 
-2. Run the /buddy skill to get the user's buddy info. If /buddy is not available, ask the user to describe their buddy.
+2. First check if the user already has buddy data configured by running `node <CLI_PATH> status`. If it shows a buddy that is NOT the default (species is not from rollCompanionBones), tell the user their buddy is already set up and ask if they want to re-import.
 
-3. Parse the /buddy output to extract these fields:
+3. Run the /buddy skill to get the user's buddy info. If /buddy is not available, **ask the user to describe their buddy manually** — do NOT guess or use fallback data. Do NOT run setup with data you're unsure about.
+
+4. Parse the /buddy output to extract these fields:
    - **species**: the species name (e.g., "blob", "duck", "cat", etc.)
    - **rarity**: "common", "uncommon", "rare", "epic", or "legendary"
    - **eye**: the eye character used in the sprite (e.g., "·", "✦", "×", "◉", "@", "°")
@@ -55,7 +57,7 @@ Follow these steps:
    - **stats**: the 5 stat values: DEBUGGING, PATIENCE, CHAOS, WISDOM, SNARK (numbers 1-100)
    - **name**: the companion's name (e.g., "Zephyrost")
 
-4. Run the setup command with the extracted data as JSON:
+5. Run the setup command with the extracted data as JSON:
 ```
 node <CLI_PATH> setup '<JSON>'
 ```
@@ -65,6 +67,6 @@ Where `<JSON>` is a JSON string like:
 {"species":"blob","rarity":"epic","eye":"✦","hat":"none","shiny":false,"stats":{"DEBUGGING":27,"PATIENCE":72,"CHAOS":49,"WISDOM":100,"SNARK":70},"name":"Zephyrost"}
 ```
 
-5. Display the result to the user.
+6. Display the result to the user.
 
-If you cannot parse the /buddy output, ask the user to manually provide: species, rarity, eye character, stats (DEBUGGING, PATIENCE, CHAOS, WISDOM, SNARK), and their buddy's name.
+**IMPORTANT:** If you cannot read /buddy data, do NOT guess. Ask the user to provide: species, rarity, eye character, hat, shiny, stats (DEBUGGING, PATIENCE, CHAOS, WISDOM, SNARK), and name. Only run setup with data the user confirmed.
