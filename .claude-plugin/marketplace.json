@@ -1,0 +1,13 @@
+{
+  "name": "buddy-evolution",
+  "owner": {
+    "name": "yazelin"
+  },
+  "plugins": [
+    {
+      "name": "buddy-evolution",
+      "source": "./packages/plugin",
+      "description": "RPG evolution system for /buddy — pets grow from actual usage"
+    }
+  ]
+}
