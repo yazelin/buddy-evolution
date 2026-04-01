@@ -1,5 +1,14 @@
 #!/bin/bash
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-PLUGIN_ROOT="$(dirname "$SCRIPT_DIR")"
-node "$PLUGIN_ROOT/dist/hooks/on-compact.js" 2>/dev/null
+set -euo pipefail
+
+DATA_DIR="${CLAUDE_PLUGIN_DATA:-$HOME/.buddy-evolution}"
+SESSION_FILE="$DATA_DIR/current-session.json"
+
+[ -f "$SESSION_FILE" ] || exit 0
+
+STATE=$(cat "$SESSION_FILE")
+CR=$(echo "$STATE" | node -e "try{const d=JSON.parse(require('fs').readFileSync(0,'utf-8'));console.log(d.contextResets+1)}catch{console.log(1)}" 2>/dev/null || echo "1")
+NEW=$(echo "$STATE" | node -e "try{const d=JSON.parse(require('fs').readFileSync(0,'utf-8'));d.contextResets=$CR;console.log(JSON.stringify(d))}catch{}" 2>/dev/null || echo "$STATE")
+echo "$NEW" > "$SESSION_FILE"
+
 exit 0

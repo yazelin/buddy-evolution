@@ -1,4 +1,9 @@
 node_modules/
-dist/
 .turbo/
 *.tsbuildinfo
+
+# Allow dist/ for plugin distribution (marketplace needs pre-built files)
+# Core dist
+!packages/core/dist/
+# Plugin dist
+!packages/plugin/dist/
