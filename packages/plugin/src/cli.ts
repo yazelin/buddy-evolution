@@ -131,6 +131,48 @@ function handleSetup(jsonArg: string): void {
   console.log('  Run /evo to see your buddy!')
 }
 
+function handleConnect(tokenArg: string): void {
+  if (!tokenArg) {
+    console.log('  Usage: /evo connect <token>')
+    console.log('')
+    console.log('  Get your token at: https://buddy-evolution-web.vercel.app/login')
+    console.log('  Sign in → Settings → Generate Token → copy the token string')
+    return
+  }
+
+  // Token might be the raw token or a JSON config blob
+  let userId = ''
+  let apiToken = tokenArg.trim()
+
+  try {
+    const parsed = JSON.parse(tokenArg)
+    if (parsed.apiToken) {
+      apiToken = parsed.apiToken
+      userId = parsed.userId || ''
+    }
+  } catch {
+    // Not JSON, treat as raw token
+  }
+
+  const config: SyncConfig = loadSyncConfig() || {
+    userId: '',
+    apiToken: '',
+    platformUrl: 'https://buddy-evolution-web.vercel.app',
+    companionName: 'Buddy',
+  }
+
+  config.apiToken = apiToken
+  if (userId) config.userId = userId
+  config.platformUrl = 'https://buddy-evolution-web.vercel.app'
+  saveSyncConfig(config)
+
+  console.log('  Connected to platform!')
+  if (userId) console.log(`  User: ${userId}`)
+  console.log(`  Token: ${apiToken.slice(0, 8)}...${apiToken.slice(-4)}`)
+  console.log('')
+  console.log('  Run /evo sync to upload your buddy.')
+}
+
 async function main(): Promise<void> {
   const args = process.argv.slice(2)
   const subcommand = args[0] || 'status'
@@ -157,8 +199,12 @@ async function main(): Promise<void> {
       handleSetup(args.slice(1).join(' '))
       break
 
+    case 'connect':
+      handleConnect(args.slice(1).join(' '))
+      break
+
     default:
-      console.log('Usage: /evo [status|stats|sync|setup]')
+      console.log('Usage: /evo [status|stats|sync|setup|connect]')
       break
   }
 }

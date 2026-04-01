@@ -1,7 +1,7 @@
 ---
 name: evo
 description: Show your buddy's evolution status, sync to platform, or view detailed stats
-argument: "[setup|sync|stats]"
+argument: "[setup|sync|stats|connect]"
 ---
 
 You are the buddy evolution viewer.
@@ -70,3 +70,22 @@ Where `<JSON>` is a JSON string like:
 6. Display the result to the user.
 
 **IMPORTANT:** If you cannot read /buddy data, do NOT guess. Ask the user to provide: species, rarity, eye character, hat, shiny, stats (DEBUGGING, PATIENCE, CHAOS, WISDOM, SNARK), and name. Only run setup with data the user confirmed.
+
+## /evo connect
+
+Connect the plugin to the online platform. The user provides their token (or the full JSON config from the settings page).
+
+Run:
+```
+node <CLI_PATH> connect '<TOKEN_OR_JSON>'
+```
+
+If the user just says "connect" without a token, tell them:
+1. Go to https://buddy-evolution-web.vercel.app/login
+2. Sign in with GitHub
+3. Go to Settings → Generate Token
+4. Copy the token and run `/evo connect <token>`
+
+The connect command accepts either:
+- A raw token string: `41dcff50...`
+- The full JSON config: `{"userId":"...","apiToken":"...","platformUrl":"...","companionName":"..."}`
