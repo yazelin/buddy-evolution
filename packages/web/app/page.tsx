@@ -49,6 +49,10 @@ export default async function Home() {
           <p className="text-gray-400 mt-4">
             Install the plugin. Use Claude Code. Watch your buddy evolve.
           </p>
+          <div className="mt-6 flex gap-4 justify-center">
+            <a href="/login" className="bg-green-700 hover:bg-green-600 px-4 py-2 rounded">Sign in</a>
+            <a href="/achievements" className="bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded">Achievements</a>
+          </div>
         </header>
 
         <section>
