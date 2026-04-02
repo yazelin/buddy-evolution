@@ -1,5 +1,11 @@
 # Buddy Evolution
 
+> **Notice (2026-04-01):** Anthropic has [confirmed](https://github.com/anthropics/claude-code/issues/41684#issuecomment-4172557121) that `/buddy` is an April Fools feature and will be removed soon. This plugin depends on `/buddy` and may stop working once it's removed.
+>
+> If you're looking for a **standalone** buddy progression system that works without the official `/buddy`, check out **[FrankFMY/buddy-evolution](https://github.com/FrankFMY/buddy-evolution)** — zero dependencies, fully local, no reliance on `/buddy`.
+>
+> See [sunset notice](docs/2026-04-01-buddy-sunset-notice.md) for details.
+
 RPG evolution system for Claude Code's `/buddy` companion pet. Your pet grows based on actual usage — not RNG, not time gates, just how much you use Claude Code.
 
 ![Landing Page](docs/screenshots/landing.png)
